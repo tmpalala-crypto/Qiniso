@@ -1,1 +1,105 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QINISO SCAN PRO + SHIELD + AUTO MAP TRACE V26</title>
+<script src="security-lock-v2.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="manifest" href="manifest.json"><link rel="icon" href="logo.png"><meta name="theme-color" content="#0a1931">
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getFirestore,collection,addDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// QINISO V26 - NEW PROJECT scansafeafrica-boards
+const cfg={apiKey:"AIzaSyAyUyPLlkvBZHnI9yqnmJ8w8r7WSYZ5gls",authDomain:"scansafeafrica-boards.firebaseapp.com",projectId:"scansafeafrica-boards",storageBucket:"scansafeafrica-boards.firebasestorage.app",messagingSenderId:"130832397347",appId:"1:130832397347:web:1f06f1b998d5655160ed96",measurementId:"G-9LP28329PL"};
+const app=initializeApp(cfg);const db=getFirestore(app);window.db=db;window.qinisoDB=db;window.f={collection,addDoc,serverTimestamp};window.qinisoAdd=addDoc;window.qinisoColl=collection;window.qinisoTime=serverTimestamp;
+console.log('✅ QINISO SCAN V26 ACTIVE - AUTO TRACE + CAMERA TRAP + DEVICE');
+</script></head>
+<body class="bg-[#0f0f0f] min-h-screen">
+<div class="bg-black border-b-2 border-yellow-400 p-4 text-center">
+<div class="w-28 h-28 mx-auto bg-gradient-to-b from-yellow-900 to-black rounded-3xl border-2 border-yellow-400 flex items-center justify-center shadow-[0_0_30px_rgba(255,215,0,0.5)]">
+<img src="logo.png" class="w-24 h-24 object-contain">
+</div>
+<div class="mt-3 text-yellow-400 font-black text-[18px]">QINISO SCAN PRO + SHIELD V26</div>
+<div class="mt-2 inline-flex bg-[#0f2a1a] border border-green-500 text-green-300 text-[10px] px-3 py-1 rounded-full">🔒 Secured & Logged — POPIA Compliant | SAPS 2024/4410 | AUTO TRACE + 📸 CAMERA TRAP + DEVICE V26</div>
+<div class="text-[10px] text-gray-400 mt-1">🛡️ Shield V26 Active - Location Auto-Traced + Device Forensics</div>
+<div id="secStatus" class="text-[8px] text-green-400 mt-1 font-bold">QINISO Security V26 Active...</div>
+<div class="mt-3 bg-[#1a1a1a] border border-yellow-600/50 rounded-xl p-2">
+<div class="text-yellow-400 text-[9px] font-black">👇 SELECT AGE - GOGO MODE 👇</div>
+<div class="grid grid-cols-2 gap-2 mt-1">
+<select id="langSelect" class="bg-black border border-yellow-600 text-white rounded-lg p-2 text-[10px] font-bold"><option value="en">🌍 ENGLISH</option><option value="zu">🇿🇦 ZULU</option><option value="xh">🇿🇦 XHOSA</option><option value="af">🇿🇦 AFRIKAANS</option></select>
+<select id="ageSelect" onchange="changeAge()" class="bg-black border-2 border-green-500 text-white rounded-lg p-2 text-[10px] font-black"><option value="adult">👤 ADULT 18+</option><option value="gogo">👵 GOGO 60+</option><option value="youth">🧒 YOUTH</option><option value="child">👶 CHILD</option></select>
+</div></div></div>
 
+<div class="p-3 max-w-md mx-auto">
+<div id="youthScreen">
+<div class="bg-white rounded-2xl p-4 shadow-xl border-2 border-gray-200">
+<div class="flex items-center gap-2 font-black text-[14px]">📱 Point camera to QR — Security Logged V26</div>
+<div class="text-[10px] text-gray-500 mt-1 bg-black text-green-400 p-2 rounded-lg"><div id="autoGps">📍 GPS: Tracing...</div><div id="autoIp">🌐 IP: Getting...</div><div id="autoDate"></div><div id="autoAccuracy"></div><div id="autoDevice" class="text-[8px] text-yellow-300"></div></div>
+<button onclick="startScanMain()" class="w-full mt-3 bg-black border-2 border-yellow-400 text-white font-black text-[14px] p-4 rounded-xl">📷 START SCAN - TAP HERE</button>
+<div class="text-[10px] text-center text-gray-500 mt-2">By scanning you consent to POPIA logging + device + 📸 camera trap - QINISO V26 <a class="text-blue-600 underline font-bold">Privacy & Legal</a></div>
+<div id="reader" class="mt-3 rounded-xl overflow-hidden"></div><div id="result" class="mt-3 font-black text-center text-sm"></div>
+<div id="feelBox" style="display:none;" class="mt-3 bg-gray-50 border-2 border-yellow-400 rounded-xl p-3 text-center">
+<div class="font-black text-sm">How do you feel? 😊😟⚠️</div>
+<div class="flex gap-2 justify-center my-2"><button id="bSafe" onclick="setFeel('safe')" class="bg-white border-2 border-green-500 rounded-xl p-2 text-[11px]">😊 SAFE</button><button id="bConcern" onclick="setFeel('concern')" class="bg-white border-2 border-orange-500 rounded-xl p-2 text-[11px]">😟 CONCERN</button><button id="bUnsafe" onclick="setFeel('unsafe')" class="bg-white border-2 border-red-500 rounded-xl p-2 text-[11px]">⚠️ UNSAFE</button></div>
+<textarea id="commentInput" placeholder="Write..." class="w-full border-2 border-black rounded-xl p-2 text-[12px]"></textarea>
+<button onclick="saveFeeling()" class="w-full mt-2 bg-black text-yellow-400 font-black p-3 rounded-xl border border-yellow-400">📤 SEND</button><div id="feelMsg" class="text-[11px] font-black mt-2"></div>
+</div></div>
+
+<div class="bg-white rounded-2xl p-2 mt-3 border-2 border-green-500">
+<div class="font-black text-[11px] flex justify-between"><span>📍 LIVE LOCATION AUTO-TRACE V26</span><span id="mapStatus" class="text-green-600">● LIVE</span></div>
+<div id="miniMap" class="h-[220px] rounded-xl mt-2 bg-gray-200"></div>
+<div class="text-[8px] text-center mt-1 text-gray-500">🛰️ Auto tracing - Location + IP + Device saved to CEO portal map automatically when you scan - QINISO V26</div>
+</div>
+</div>
+
+<div id="gogoScreen" style="display:none;">
+<div class="bg-[#FFF8E1] border-4 border-[#2E7D32] rounded-2xl p-3">
+<div class="bg-[#2E7D32] text-white p-4 rounded-xl text-center font-black text-[22px]">QINISO FOR GOGO 👵🏾<br><span class="text-[12px]">Sawubona Gogo! Location Auto-Traced V26 ❤️</span></div>
+<button onclick="startScanGogo()" class="w-full mt-3 bg-[#00C853] text-white font-black text-[20px] p-4 rounded-xl">📷 SCAN - Jonga Ukutya</button>
+<div id="readerGogo" class="mt-3 rounded-xl overflow-hidden"></div><div id="resultGogo" class="mt-3 font-black text-center text-[18px]"></div>
+<div id="feelBoxGogo" style="display:none;" class="mt-3 bg-white border-3 border-yellow-400 rounded-xl p-3 text-center">
+<div class="font-black">Uziva njani Gogo? 😊😟⚠️</div>
+<div class="flex gap-2 justify-center my-2"><button id="bSafeG" onclick="setFeelGogo('safe')" class="text-[24px] bg-green-50 border-2 border-green-600 rounded-xl p-2">😊</button><button id="bConcernG" onclick="setFeelGogo('concern')" class="text-[24px] bg-orange-50 border-2 border-orange-600 rounded-xl p-2">😟</button><button id="bUnsafeG" onclick="setFeelGogo('unsafe')" class="text-[24px] bg-red-50 border-2 border-red-600 rounded-xl p-2">⚠️</button></div>
+<textarea id="commentInputGogo" placeholder="Bhala..." class="w-full border-2 border-green-700 rounded-xl p-2 text-[14px]"></textarea>
+<button onclick="saveFeelingGogo()" class="w-full mt-2 bg-black text-white font-black p-3 rounded-xl">📤 THUMELA</button><div id="feelMsgGogo" class="font-black mt-2"></div>
+</div>
+<div class="bg-white rounded-xl p-2 mt-3 border-2 border-green-500"><div class="font-black text-[11px]">📍 GOGO LOCATION V26</div><div id="miniMapGogo" class="h-[200px] rounded-xl mt-2 bg-gray-200"></div></div>
+</div></div></div>
+
+<script>
+let selectedFeel="",selectedFeelGogo="",lastBar="",currentLat=-33.84933,currentLng=25.45161,currentAcc=0,miniMap=null,miniMapGogo=null,watchId=null,currentIp="unknown",currentDevice={};
+function changeAge(){let a=document.getElementById('ageSelect').value;if(a==='gogo'){document.getElementById('youthScreen').style.display='none';document.getElementById('gogoScreen').style.display='block';setTimeout(initGogoMap,500);}else{document.getElementById('gogoScreen').style.display='none';document.getElementById('youthScreen').style.display='block';}}
+function initMainMap(lat,lng){
+ if(miniMap){miniMap.setView([lat,lng],15); L.marker([lat,lng]).addTo(miniMap).bindPopup("📍 Scan Location - Auto Traced V26").openPopup(); return;}
+ miniMap=L.map('miniMap').setView([lat,lng],15); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(miniMap);
+ L.marker([lat,lng]).addTo(miniMap).bindPopup("📍 You - Auto Traced V26").openPopup(); L.circle([lat,lng],{radius:50,color:'green',fillColor:'#0f0',fillOpacity:0.2}).addTo(miniMap);
+}
+function initGogoMap(){ if(miniMapGogo) {miniMapGogo.invalidateSize(); return;} miniMapGogo=L.map('miniMapGogo').setView([currentLat,currentLng],15); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(miniMapGogo); L.marker([currentLat,currentLng]).addTo(miniMapGogo).bindPopup("Gogo Location V26").openPopup(); }
+if(navigator.geolocation){
+ navigator.geolocation.getCurrentPosition(p=>{
+  currentLat=p.coords.latitude; currentLng=p.coords.longitude; currentAcc=p.coords.accuracy;
+  document.getElementById('autoGps').innerText=`📍 GPS: ${currentLat.toFixed(5)},${currentLng.toFixed(5)} | Accuracy: ${currentAcc.toFixed(0)}m`;
+  document.getElementById('autoAccuracy').innerText=`🛰️ Auto Trace V26: ON | ${new Date().toLocaleTimeString()}`;
+  initMainMap(currentLat,currentLng);
+ },e=>{document.getElementById('autoGps').innerText="📍 GPS: Denied - Enable location!";},{enableHighAccuracy:true});
+ watchId=navigator.geolocation.watchPosition(p=>{
+  currentLat=p.coords.latitude; currentLng=p.coords.longitude; currentAcc=p.coords.accuracy;
+  document.getElementById('autoGps').innerText=`📍 GPS: ${currentLat.toFixed(5)},${currentLng.toFixed(5)} | Accuracy: ${currentAcc.toFixed(0)}m | LIVE V26`;
+  if(miniMap){miniMap.setView([currentLat,currentLng]);}
+ },null,{enableHighAccuracy:true,maximumAge:5000});
+}
+fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>{currentIp=d.ip; document.getElementById('autoIp').innerText="🌐 IP: "+d.ip+" | Device logged V26";});
+document.getElementById('autoDate').innerText="🕒 "+new Date().toLocaleString()+" | POPIA Logged V26";
+try{ currentDevice={ua:navigator.userAgent, platform:navigator.platform, lang:navigator.language, screen:screen.width+'x'+screen.height}; document.getElementById('autoDevice').innerText=`📱 Device: ${currentDevice.platform} | ${currentDevice.screen} | V26 Forensics ON`; }catch(e){}
+function startScanMain(){let qr=new Html5Qrcode("reader");qr.start({facingMode:"environment"},{fps:10,qrbox:250},async(decoded)=>{
+  qr.stop();lastBar=decoded;document.getElementById('result').innerText='🔍 '+decoded;document.getElementById('feelBox').style.display='block';
+  try{await window.f.addDoc(window.f.collection(window.db,"customer_scans"),{barcode:decoded,ageGroup:document.getElementById('ageSelect').value,lat:currentLat,lng:currentLng,accuracy:currentAcc,ip:currentIp,device:currentDevice,timestamp:window.f.serverTimestamp(),autoTraced:true,brand:"QINISO SCAN V26"});document.getElementById('result').innerText='✅ '+decoded+' | 📍 Location + Device Auto-Saved V26!';document.getElementById('mapStatus').innerText='● SAVED TO CEO MAP V26';}catch(e){document.getElementById('result').innerText='❌ '+e.message;}
+},()=>{});}
+function startScanGogo(){let qr=new Html5Qrcode("readerGogo");qr.start({facingMode:"environment"},{fps:10,qrbox:300},async(decoded)=>{
+  qr.stop();lastBar=decoded;document.getElementById('resultGogo').innerText='⏳ '+decoded;document.getElementById('feelBoxGogo').style.display='block';
+  try{await window.f.addDoc(window.f.collection(window.db,"customer_scans"),{barcode:decoded,ageGroup:"gogo",lat:currentLat,lng:currentLng,accuracy:currentAcc,ip:currentIp,device:currentDevice,timestamp:window.f.serverTimestamp(),autoTraced:true,brand:"QINISO GOGO V26"});document.getElementById('resultGogo').innerText='✅ KULUNGILE | 📍 Saved V26!';}catch(e){document.getElementById('resultGogo').innerText='❌ '+e.message;}
+},()=>{});}
+function setFeel(f){selectedFeel=f;['bSafe','bConcern','bUnsafe'].forEach(id=>document.getElementById(id).style.background='white');if(f==='safe')document.getElementById('bSafe').style.background='#bbf7d0';if(f==='concern')document.getElementById('bConcern').style.background='#ffecb3';if(f==='unsafe')document.getElementById('bUnsafe').style.background='#fecaca';}
+function setFeelGogo(f){selectedFeelGogo=f;['bSafeG','bConcernG','bUnsafeG'].forEach(id=>document.getElementById(id).style.background='white');if(f==='safe')document.getElementById('bSafeG').style.background='#bbf7d0';if(f==='concern')document.getElementById('bConcernG').style.background='#ffecb3';if(f==='unsafe')document.getElementById('bUnsafeG').style.background='#fecaca';}
+async function saveFeeling(){let c=document.getElementById('commentInput').value;document.getElementById('feelMsg').innerText='Saving...';try{await window.f.addDoc(window.f.collection(window.db,"customer_feelings"),{feeling:selectedFeel,comment:c,barcode:lastBar,lat:currentLat,lng:currentLng,ip:currentIp,device:currentDevice,timestamp:window.f.serverTimestamp(),brand:"QINISO V26"});document.getElementById('feelMsg').innerText='✅ Saved! 📍 Location + Device linked V26!';}catch(e){document.getElementById('feelMsg').innerText='❌ '+e.message;}}
+async function saveFeelingGogo(){let c=document.getElementById('commentInputGogo').value;document.getElementById('feelMsgGogo').innerText='Saving...';try{await window.f.addDoc(window.f.collection(window.db,"customer_feelings"),{feeling:selectedFeelGogo,comment:c,barcode:lastBar,ageGroup:"gogo",lat:currentLat,lng:currentLng,ip:currentIp,device:currentDevice,timestamp:window.f.serverTimestamp(),brand:"QINISO GOGO V26"});document.getElementById('feelMsgGogo').innerText='✅ Enkosi Gogo! 📍 V26';}catch(e){document.getElementById('feelMsgGogo').innerText='❌ '+e.message;}}
+</script></body></html>
