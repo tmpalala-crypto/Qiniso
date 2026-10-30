@@ -1,1 +1,134 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QINISO V4 FINAL - SECURITY V26 + CAMERA TRAP + DASHBOARD LINK V6 - INSPECTOR FIELD TOOL</title>
+<script src="security-lock-v2.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="icon" href="logo.png"><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#0a1931">
+<!-- FIREBASE DASHBOARD LINK V6 - UPDATED TO NEW PROJECT scansafeafrica-boards V26 -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = { apiKey: "AIzaSyAyUyPLlkvBZHnI9yqnmJ8w8r7WSYZ5gls", authDomain: "scansafeafrica-boards.firebaseapp.com", projectId: "scansafeafrica-boards", storageBucket: "scansafeafrica-boards.firebasestorage.app", messagingSenderId: "130832397347", appId: "1:130832397347:web:1f06f1b998d5655160ed96", measurementId: "G-9LP28329PL" };
+const fbApp=initializeApp(firebaseConfig);
+window.qinisoDB=getFirestore(fbApp);
+window.qinisoAdd=addDoc;
+window.qinisoColl=collection;
+window.qinisoTime=serverTimestamp;
+window.db=window.qinisoDB;
+window.f={collection, addDoc, serverTimestamp};
+console.log('✅ QINISO DASHBOARD LINK V6 ACTIVE - scansafeafrica-boards - INSPECTOR V26 CAMERA TRAP');
+</script>
+<style>
+.photo-box{border:2px dashed #d4af37;border-radius:14px;background:#fffbeb;min-height:145px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.photo-preview{width:100%;height:110px;object-fit:cover;border-radius:10px}
+#map{height:180px;border-radius:12px;z-index:1}
+.sig-canvas{border:2px dashed #1e3a8a;border-radius:12px;width:100%;height:85px;background:white}
+canvas{touch-action:none}
+</style>
+</head>
+<body class="bg-[#f5f7fb] pb-[20px]">
 
+<div id="loginOverlay" style="position:fixed;inset:0;background:#0f172a;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;">
+<div style="background:white;border-radius:20px;padding:20px;width:100%;max-width:340px;border-top:5px solid #1e3a8a;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.5)">
+<img src="logo.png" style="width:60px;height:60px;border-radius:12px;border:2px solid #d4af37;margin:0 auto 10px;display:block;object-fit:cover;">
+<div style="font-weight:900;font-size:14px;">QINISO SECURE LOGIN 🔒 V26 CAMERA TRAP + LINK V6</div>
+<div style="font-size:9px;color:#64748b;margin-bottom:4px;font-weight:bold;">FIELD TOOL PRO V4 - SECURITY V26 + DEVICE FORENSICS + DASHBOARD LINK - QINISO MARK TECHNOLOGIES</div>
+<div style="font-size:7px;color:red;margin-bottom:3px;font-weight:900;">📸 SECURITY CAMERA ACTIVE - Photo captured on fail</div>
+<div style="font-size:7px;color:#94a3b8;margin-bottom:15px;">SAPS 2024/4410 • CIPC • SARS • VAT • NCC • HEALTH • DEVICE FORENSICS V26</div>
+<select id="inspectorSelect" style="width:100%;border:2px solid #1e3a8a;border-radius:10px;padding:11px;font-size:11px;font-weight:900;margin-bottom:10px;background:white;">
+<option value="">Select Inspector...</option>
+<option value="INS01">INS01 - Bethelsdorp</option>
+<option value="INS02">INS02 - Korsten</option>
+<option value="INS03">INS03 - Motherwell</option>
+<option value="INS04">INS04 - Uitenhage</option>
+<option value="INS05">INS05 - Despatch</option>
+<option value="INS06">INS06 - Kwazakhele</option>
+<option value="INS07">INS07 - Zwide</option>
+<option value="INS08">INS08 - New Brighton</option>
+<option value="INS09">INS09 - Gelvandale</option>
+<option value="INS10">INS10 - Security Moss - MASTER 👮</option>
+</select>
+<input id="inspectorPass" type="password" placeholder="Enter Password" style="width:100%;border:2px solid #d4af37;border-radius:10px;padding:11px;font-size:12px;margin-bottom:10px;text-align:center;font-weight:bold;">
+<button onclick="loginInspector()" style="width:100%;background:#1e3a8a;color:white;padding:12px;border-radius:12px;font-weight:900;font-size:12px;cursor:pointer;">🔓 UNLOCK FIELD TOOL 👆</button>
+<div id="loginError" style="color:red;font-size:9px;margin-top:10px;display:none;font-weight:bold;"></div>
+<div style="font-size:7px;color:#94a3b8;margin-top:12px;line-height:1.3;">3 tries only! Then 60min block + 📸 Photo + IP + GPS + Device reported to SAPS + CEO + Brands<br>Linked to <b>security-lock-v2.js V26 + CAMERA TRAP + Dashboard V6 - QINISO</b></div>
+<div id="secStatus" style="font-size:6px;color:green;margin-top:6px;font-weight:bold;">Checking security-lock-v2.js V26 + Camera + Firebase Link V6...</div>
+</div>
+</div>
+
+<div class="bg-white p-3 flex items-center gap-3 shadow" style="border-top:5px solid #1e3a8a">
+<img src="logo.png" class="w-[65px] h-[65px] rounded-xl border-2 border-yellow-500 shadow-lg object-cover">
+<div class="flex-1"><div class="font-black text-[13px]">QINISO SCAN PRO + SHIELD V26 + LINK V6</div><div class="text-[9px] font-bold">QINISO MARK TECHNOLOGIES - FIELD TOOL PRO V4 - CAMERA TRAP V26</div><div class="text-[7px] text-slate-500 font-bold">SAPS 2024/4410 • CIPC • SARS • VAT • NCC • HEALTH • <span id="currentInspectorLabel">Not Logged</span></div></div>
+<div class="bg-green-100 border border-green-600 text-[7px] font-black px-2 py-1 rounded text-center">FINAL<br>V4 V26 V6<br><span id="scanId" style="font-size:6px;">QI-000000</span></div>
+</div>
+
+<div class="bg-white rounded-2xl m-3 p-3 shadow-sm">
+<div class="flex justify-between"><div class="font-black text-[11px]">📍 AUTOMATIC LOCATION PIN - <span id="inspectorLoc">Bethelsdorp</span></div><button onclick="getGPS()" class="bg-blue-600 text-white text-[8px] px-2 py-1 rounded-full font-bold">📍 REFRESH</button></div>
+<div id="map" class="mt-2 border-2 border-yellow-500"></div>
+<div class="mt-1 text-[8px] font-bold" id="mapAddr">Bethelsdorp auto pin V26...</div>
+<div class="mt-1 text-[7px]">GPS: <span id="gpsTxt">-33.8693, 25.4516</span> • IP: <span id="ipTxt">...</span> • Device: <span id="deviceTxt">...</span> • <span id="gpsTag">GPS + IP + Time + Device V26</span></div>
+</div>
+
+<div class="bg-white rounded-2xl m-3 p-3 shadow-sm">
+<div class="font-black text-[11px]">📸 EVIDENCE PHOTOS - <span id="evCount">0 photos</span></div>
+<div class="grid grid-cols-2 gap-2 mt-2">
+<div class="photo-box" id="boxInvoice"><img id="prevInvoice" class="hidden photo-preview"><div id="phInvoice" class="text-center"><div class="text-xl">📄</div><div class="font-black text-[9px]">INVOICE</div><label for="fileInvoice" class="bg-blue-600 text-white text-[8px] px-2 py-1 rounded-full mt-1 inline-block cursor-pointer">📷 TAKE PHOTO</label></div><div id="okInvoice" class="hidden absolute top-1 right-1 bg-green-600 text-white text-[6px] px-1 rounded-full">✓</div></div>
+<input type="file" id="fileInvoice" accept="image/*" capture="environment" class="hidden" onchange="handlePhoto(this,'prevInvoice','phInvoice','okInvoice')">
+<div class="photo-box" id="boxProduct"><img id="prevProduct" class="hidden photo-preview"><div id="phProduct" class="text-center"><div class="text-xl">📦</div><div class="font-black text-[9px]">PRODUCTS</div><label for="fileProduct" class="bg-blue-600 text-white text-[8px] px-2 py-1 rounded-full mt-1 inline-block cursor-pointer">📷 TAKE PHOTO</label></div><div id="okProduct" class="hidden absolute top-1 right-1 bg-green-600 text-white text-[6px] px-1 rounded-full">✓</div></div>
+<input type="file" id="fileProduct" accept="image/*" capture="environment" class="hidden" onchange="handlePhoto(this,'prevProduct','phProduct','okProduct')">
+<div class="photo-box" id="boxShop"><img id="prevShop" class="hidden photo-preview"><div id="phShop" class="text-center"><div class="text-xl">🏪</div><div class="font-black text-[9px]">SHOP FRONT</div><label for="fileShop" class="bg-blue-600 text-white text-[8px] px-2 py-1 rounded-full mt-1 inline-block cursor-pointer">📷 TAKE PHOTO</label></div><div id="okShop" class="hidden absolute top-1 right-1 bg-green-600 text-white text-[6px] px-1 rounded-full">✓</div></div>
+<input type="file" id="fileShop" accept="image/*" capture="environment" class="hidden" onchange="handlePhoto(this,'prevShop','phShop','okShop')">
+<div class="photo-box" id="boxBatch"><img id="prevBatch" class="hidden photo-preview"><div id="phBatch" class="text-center"><div class="text-xl">🔖</div><div class="font-black text-[9px]">BATCH LABEL</div><label for="fileBatch" class="bg-blue-600 text-white text-[8px] px-2 py-1 rounded-full mt-1 inline-block cursor-pointer">📷 TAKE PHOTO</label></div><div id="okBatch" class="hidden absolute top-1 right-1 bg-green-600 text-white text-[6px] px-1 rounded-full">✓</div></div>
+<input type="file" id="fileBatch" accept="image/*" capture="environment" class="hidden" onchange="handlePhoto(this,'prevBatch','phBatch','okBatch')">
+</div>
+</div>
+
+<div class="bg-white rounded-2xl m-3 p-3 shadow-sm border-2 border-slate-800">
+<div class="font-black text-[12px]">📋 SCANNING FOR - ALL DEPARTMENTS COMPLIANCE V26</div>
+<div class="text-[9px] text-slate-600">Scan documents for each department - QINISO V26</div>
+<div class="mt-3 space-y-2">
+<div class="border-2 border-dashed border-slate-400 bg-slate-50 rounded-xl p-2 flex items-center gap-2"><div class="w-10 h-10 bg-white rounded flex items-center justify-center border font-black text-[10px]">CIPC</div><div class="flex-1"><div class="font-black text-[10px]">CIPC - Company Registration</div><div id="cipcStat" class="text-[7px] text-slate-500">Not scanned</div></div><label for="fileCipc" class="bg-slate-800 text-white text-[8px] px-2 py-1.5 rounded-lg font-bold cursor-pointer">📷 SCAN</label></div><input type="file" id="fileCipc" accept="image/*" capture="environment" class="hidden" onchange="handleDoc(this,'cipcStat')">
+<div class="border-2 border-dashed border-blue-400 bg-blue-50 rounded-xl p-2 flex items-center gap-2"><div class="w-10 h-10 bg-white rounded flex items-center justify-center border font-black text-[10px] text-blue-700">SARS</div><div class="flex-1"><div class="font-black text-[10px]">SARS - Tax Clearance</div><div id="sarsStat" class="text-[7px] text-slate-500">Not scanned</div></div><label for="fileSars" class="bg-blue-700 text-white text-[8px] px-2 py-1.5 rounded-lg font-bold cursor-pointer">📷 SCAN</label></div><input type="file" id="fileSars" accept="image/*" capture="environment" class="hidden" onchange="handleDoc(this,'sarsStat')">
+<div class="border-2 border-dashed border-yellow-500 bg-yellow-50 rounded-xl p-2 flex items-center gap-2"><div class="w-10 h-10 bg-white rounded flex items-center justify-center border font-black text-[10px]">VAT</div><div class="flex-1"><div class="font-black text-[10px]">VAT - VAT Registration</div><div id="vatStat" class="text-[7px] text-slate-500">Not scanned</div></div><label for="fileVat" class="bg-yellow-600 text-white text-[8px] px-2 py-1.5 rounded-lg font-bold cursor-pointer">📷 SCAN</label></div><input type="file" id="fileVat" accept="image/*" capture="environment" class="hidden" onchange="handleDoc(this,'vatStat')">
+<div class="border-2 border-dashed border-green-500 bg-green-50 rounded-xl p-2 flex items-center gap-2"><div class="w-10 h-10 bg-white rounded flex items-center justify-center border text-[12px]">🏥</div><div class="flex-1"><div class="font-black text-[10px]">LICENSE DEPT OF HEALTH / CONSUMER</div><div id="healthStat" class="text-[7px] text-slate-500">Not scanned</div></div><label for="fileHealth" class="bg-green-700 text-white text-[8px] px-2 py-1.5 rounded-lg font-bold cursor-pointer">📷 SCAN</label></div><input type="file" id="fileHealth" accept="image/*" capture="environment" class="hidden" onchange="handleDoc(this,'healthStat')">
+<div class="border-2 border-dashed border-red-500 bg-red-50 rounded-xl p-2 flex items-center gap-2"><div class="w-10 h-10 bg-white rounded flex items-center justify-center border font-black text-[10px] text-red-700">NCC</div><div class="flex-1"><div class="font-black text-[10px]">NCC - National Consumer Commission</div><div id="nccStat" class="text-[7px] text-slate-500">Not scanned</div></div><label for="fileNcc" class="bg-red-700 text-white text-[8px] px-2 py-1.5 rounded-lg font-bold cursor-pointer">📷 SCAN</label></div><input type="file" id="fileNcc" accept="image/*" capture="environment" class="hidden" onchange="handleDoc(this,'nccStat')">
+</div>
+<div id="compliancePreview" class="mt-2 grid grid-cols-3 gap-2"></div>
+</div>
+
+<div class="bg-white rounded-2xl m-3 p-3 shadow-sm border-2 border-blue-900">
+<div class="font-black text-[12px] border-b-2 border-yellow-500 inline-block pb-1">✍️ SIGNATURE + 👆 FINGERPRINT + 🎤 VOICE - 3 PARTIES V26</div>
+<div class="mt-4 bg-blue-50 border-2 border-blue-700 rounded-xl p-3"><div class="font-black text-[11px] text-blue-900">1️⃣ INSPECTOR - Sign + Fingerprint + Voice</div><canvas id="sigInspector" class="sig-canvas mt-2"></canvas><div class="flex justify-between text-[8px] mt-1"><span id="sInspector">Not signed</span><button onclick="clearSig('sigInspector','sInspector')" class="bg-slate-200 px-2 py-1 rounded">Clear</button></div><div class="grid grid-cols-2 gap-2 mt-2"><div class="bg-white border-2 border-blue-700 rounded-xl p-2 flex items-center gap-2"><div id="fpI1" class="w-8 h-8 bg-white border border-blue-700 rounded-full flex items-center justify-center">👆</div><div class="flex-1"><div class="font-black text-[8px]">FINGERPRINT</div><div id="fpS1" class="text-[7px]">Not verified</div></div><button id="fpB1" onclick="verifyFp(1)" class="bg-blue-700 text-white text-[7px] px-2 py-1 rounded font-bold">VERIFY</button></div><div class="bg-slate-900 rounded-xl p-2 flex items-center gap-2"><button id="recBtn1" onclick="toggleRec(1)" class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white text-[12px]">🎤</button><div class="flex-1 text-white"><div id="recStatus1" class="font-black text-[7px]">VOICE - TAP TO RECORD</div><div id="recTime1" class="text-[6px] text-gray-400">0:00</div></div></div></div></div>
+<div class="mt-3 bg-yellow-50 border-2 border-yellow-600 rounded-xl p-3"><div class="font-black text-[11px] text-yellow-900">2️⃣ SHOP OWNER - Sign + Fingerprint + Voice</div><canvas id="sigOwner" class="sig-canvas mt-2"></canvas><div class="flex justify-between text-[8px] mt-1"><span id="sOwner">Not signed</span><button onclick="clearSig('sigOwner','sOwner')" class="bg-slate-200 px-2 py-1 rounded">Clear</button></div><div class="grid grid-cols-2 gap-2 mt-2"><div class="bg-white border-2 border-yellow-600 rounded-xl p-2 flex items-center gap-2"><div id="fpI2" class="w-8 h-8 bg-white border border-yellow-600 rounded-full flex items-center justify-center">👆</div><div class="flex-1"><div class="font-black text-[8px]">FINGERPRINT</div><div id="fpS2" class="text-[7px]">Not verified</div></div><button id="fpB2" onclick="verifyFp(2)" class="bg-yellow-600 text-white text-[7px] px-2 py-1 rounded font-bold">VERIFY</button></div><div class="bg-slate-900 rounded-xl p-2 flex items-center gap-2"><button id="recBtn2" onclick="toggleRec(2)" class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white text-[12px]">🎤</button><div class="flex-1 text-white"><div id="recStatus2" class="font-black text-[7px]">VOICE - TAP TO RECORD</div><div id="recTime2" class="text-[6px] text-gray-400">0:00</div></div></div></div></div>
+<div class="mt-3 bg-green-50 border-2 border-green-700 rounded-xl p-3"><div class="flex justify-between items-center"><div class="font-black text-[11px] text-green-900">3️⃣ THIRD PARTY WITNESS</div><select id="thirdPartyType" class="border-2 border-green-700 rounded-lg text-[9px] font-black px-2 py-1 bg-white"><option value="POLICE">👮 POLICE - SAPS</option><option value="DEPT_INSPECTOR">🏛️ DEPARTMENT INSPECTOR</option><option value="COMMUNITY_FORUM">👥 COMMUNITY FORUM / CPF</option><option value="WARD_COMMITTEE">🏘️ WARD COMMITTEE</option></select></div><canvas id="sigThird" class="sig-canvas mt-2"></canvas><div class="flex justify-between text-[8px] mt-1"><span id="sThird">Not signed - Select type above</span><button onclick="clearSig('sigThird','sThird')" class="bg-slate-200 px-2 py-1 rounded">Clear</button></div><div class="grid grid-cols-2 gap-2 mt-2"><div class="bg-white border-2 border-green-700 rounded-xl p-2 flex items-center gap-2"><div id="fpI3" class="w-8 h-8 bg-white border border-green-700 rounded-full flex items-center justify-center">👆</div><div class="flex-1"><div class="font-black text-[8px]">FINGERPRINT 👆</div><div id="fpS3" class="text-[7px]">Not verified</div></div><button id="fpB3" onclick="verifyFp(3)" class="bg-green-700 text-white text-[7px] px-2 py-1 rounded font-bold">VERIFY 👆</button></div><div class="bg-slate-900 rounded-xl p-2 flex items-center gap-2"><button id="recBtn3" onclick="toggleRec(3)" class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white text-[12px]">🎤</button><div class="flex-1 text-white"><div id="recStatus3" class="font-black text-[7px]">VOICE - TAP TO RECORD</div><div id="recTime3" class="text-[6px] text-gray-400">0:00</div></div></div></div></div>
+</div>
+
+<div class="bg-black border-2 border-yellow-500 rounded-2xl m-3 p-3">
+<div class="flex items-center gap-2 bg-yellow-50 rounded-xl p-2"><img src="logo.png" class="w-8 h-8 rounded border border-yellow-500"><div class="font-black text-[10px] text-amber-900">🇿🇦 PROTECTING OUR FAMILIES - <span id="footerInspector">Secure V26 + Camera Trap + Link V6</span></div></div>
+<button onclick="submitEv()" id="submitBtn" class="w-full mt-3 bg-blue-700 text-white py-3 rounded-xl font-black text-[12px]">SUBMIT ALL EVIDENCE WITH 👆 FINGERPRINTS + LINK TO DASHBOARD V26 🔒</button>
+<div class="text-[7px] text-gray-500 text-center mt-2">3x Sign + 3x Fingerprint 👆 + 3x Voice + 5 Departments + Map + Photos + Security V26 Camera Trap + DASHBOARD LINK V6 + Device Forensics</div>
+<div class="flex justify-center gap-2 mt-2"><button onclick="logoutInspector()" class="bg-slate-800 text-white text-[7px] px-3 py-1 rounded-full">🔒 LOGOUT</button><button onclick="window.open('dashboard.html','_blank')" class="bg-green-700 text-white text-[7px] px-3 py-1 rounded-full">📊 DASHBOARD V26 LIVE</button><button onclick="localStorage.clear();alert('Cleared - Moss Reset Done');location.reload();" class="bg-red-700 text-white text-[7px] px-3 py-1 rounded-full">MOSS RESET</button></div>
+</div>
+
+<script>
+const INSPECTORS = {
+  "INS01": { pass: "Qiniso01@", name: "Inspector 01", loc: "Bethelsdorp", lat: -33.8693, lng: 25.4516 },
+  "INS02": { pass: "Qiniso02@", name: "Inspector 02", loc: "Korsten", lat: -33.8693, lng: 25.6016 },
+  "INS03": { pass: "Qiniso03@", name: "Inspector 03", loc: "Motherwell", lat: -33.8047, lng: 25.6168 },
+  "INS04": { pass: "Qiniso04@", name: "Inspector 04", loc: "Uitenhage", lat: -33.7573, lng: 25.4032 },
+  "INS05": { pass: "Qiniso05@", name: "Inspector 05", loc: "Despatch", lat: -33.8027, lng: 25.4458 },
+  "INS06": { pass: "Qiniso06@", name: "Inspector 06", loc: "Kwazakhele", lat: -33.8765, lng: 25.5928 },
+  "INS07": { pass: "Qiniso07@", name: "Inspector 07", loc: "Zwide", lat: -33.8797, lng: 25.6143 },
+  "INS08": { pass: "Qiniso08@", name: "Inspector 08", loc: "New Brighton", lat: -33.8856, lng: 25.5928 },
+  "INS09": { pass: "Qiniso09@", name: "Inspector 09", loc: "Gelvandale", lat: -33.8886, lng: 25.5508 },
+  "INS10": { pass: "MossMaster2024!", name: "Security Moss MASTER", loc: "MASTER - All Areas", lat: -33.8693, lng: 25.4516, master: true }
+};
+let CURRENT_INSPECTOR=null;
+let photoCount=0, lat=-33.8693, lng=25.4516, ip='...', deviceInfo='...', map, marker;
+
+function loginInspector(){
+  if(window.QINISO_SECURITY && window.QINISO_SECURITY.checkBlocked()) return;
+  let id=document.getElementById('inspectorSelect').value;
+  let pw=document.getE
