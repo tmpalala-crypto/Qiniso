@@ -1,0 +1,161 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QINISO DASHBOARD V26 - HACKER CAMERA + DEVICE FORENSICS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="icon" href="logo.png"><meta name="theme-color" content="#0a1931">
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, query, orderBy, limit, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const cfg={apiKey:"AIzaSyAyUyPLlkvBZHnI9yqnmJ8w8r7WSYZ5gls",authDomain:"scansafeafrica-boards.firebaseapp.com",projectId:"scansafeafrica-boards",storageBucket:"scansafeafrica-boards.firebasestorage.app",messagingSenderId:"130832397347",appId:"1:130832397347:web:1f06f1b998d5655160ed96"};
+const app=initializeApp(cfg);const db=getFirestore(app);window.db=db;window.collection=collection;window.query=query;window.orderBy=orderBy;window.limit=limit;window.onSnapshot=onSnapshot;window.getDocs=getDocs;
+console.log('✅ QINISO DASHBOARD V26 ACTIVE');
+</script>
+<style>#map{height:300px;border-radius:12px}</style>
+</head>
+<body class="bg-[#f5f7fb] p-3">
+<div class="bg-[#0a1931] border-b-4 border-yellow-400 p-3 rounded-xl flex items-center gap-3">
+<img src="logo.png" class="w-14 h-14 rounded-xl border-2 border-yellow-400"><div><div class="text-yellow-400 font-black text-[16px]">QINISO DASHBOARD V26</div><div class="text-white text-[10px]">HACKER CAMERA + DEVICE FORENSICS + AUTO TRACE | SAPS 2024/4410</div><div id="liveCount" class="text-green-400 text-[9px] font-bold">● LIVE - Connecting...</div></div>
+<div class="ml-auto flex gap-2"><button onclick="location.reload()" class="bg-yellow-400 text-black text-[9px] font-black px-3 py-2 rounded-lg">🔄 REFRESH</button><button onclick="localStorage.clear()" class="bg-red-600 text-white text-[9px] px-3 py-2 rounded-lg">CLEAR</button></div>
+</div>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3">
+<div class="bg-white rounded-xl p-3 border-l-4 border-blue-600"><div class="text-[9px] text-gray-500">CUSTOMER SCANS</div><div id="scanCount" class="font-black text-[18px]">0</div></div>
+<div class="bg-white rounded-xl p-3 border-l-4 border-green-600"><div class="text-[9px] text-gray-500">FEELINGS</div><div id="feelCount" class="font-black text-[18px]">0</div></div>
+<div class="bg-white rounded-xl p-3 border-l-4 border-red-600"><div class="text-[9px] text-gray-500">HACKER ATTEMPTS</div><div id="hackCount" class="font-black text-[18px] text-red-600">0</div></div>
+<div class="bg-white rounded-xl p-3 border-l-4 border-yellow-500"><div class="text-[9px] text-gray-500">QINISO LOGS</div><div id="qinisoCount" class="font-black text-[18px]">0</div></div>
+</div>
+
+<div class="bg-white rounded-xl p-3 mt-3 border-2 border-green-500">
+<div class="font-black text-[12px] flex justify-between"><span>📍 LIVE AUTO-TRACE MAP - ALL LOCATIONS</span><span class="text-green-600 text-[10px]">● LIVE TRACKING V26</span></div>
+<div id="map" class="mt-2"></div>
+</div>
+
+<div class="mt-3">
+<div class="flex gap-2 overflow-x-auto pb-2">
+<button onclick="showTab('breaches')" id="tabBreaches" class="bg-red-600 text-white font-black text-[10px] px-4 py-2 rounded-full whitespace-nowrap">🚨 HACKER PHOTOS + DEVICE V26</button>
+<button onclick="showTab('scans')" id="tabScans" class="bg-slate-800 text-white font-black text-[10px] px-4 py-2 rounded-full whitespace-nowrap">📱 CUSTOMER SCANS</button>
+<button onclick="showTab('feelings')" id="tabFeelings" class="bg-green-700 text-white font-black text-[10px] px-4 py-2 rounded-full whitespace-nowrap">😊 FEELINGS</button>
+<button onclick="showTab('qiniso')" id="tabQiniso" class="bg-blue-700 text-white font-black text-[10px] px-4 py-2 rounded-full whitespace-nowrap">📋 QINISO FIELD LOGS</button>
+<button onclick="showTab('clones')" id="tabClones" class="bg-yellow-600 text-white font-black text-[10px] px-4 py-2 rounded-full whitespace-nowrap">⚠️ CLONE ATTEMPTS</button>
+</div>
+
+<div id="breachesSection" class="bg-white rounded-xl p-3 mt-2 border-2 border-red-600">
+<div class="font-black text-[13px] text-red-700">🚨 SECURITY BREACHES V26 - PHOTO + DEVICE + LOCATION + IP</div>
+<div class="text-[9px] text-gray-500">Every failed login with 📸 front camera photo + 📱 device details + 📍 GPS + 🌐 IP - Reported to SAPS 2024/4410</div>
+<div id="breachesList" class="mt-3 space-y-3">Loading hacker photos...</div>
+</div>
+
+<div id="scansSection" style="display:none;" class="bg-white rounded-xl p-3 mt-2 border-2 border-blue-600">
+<div class="font-black text-[13px]">📱 CUSTOMER SCANS - AUTO TRACE + DEVICE V26</div>
+<div id="scansList" class="mt-3 space-y-2">Loading...</div>
+</div>
+
+<div id="feelingsSection" style="display:none;" class="bg-white rounded-xl p-3 mt-2 border-2 border-green-600">
+<div class="font-black text-[13px]">😊 CUSTOMER FEELINGS + LOCATION V26</div>
+<div id="feelingsList" class="mt-3 space-y-2">Loading...</div>
+</div>
+
+<div id="qinisoSection" style="display:none;" class="bg-white rounded-xl p-3 mt-2 border-2 border-blue-900">
+<div class="font-black text-[13px]">📋 QINISO FIELD TOOL LOGS - INSPECTORS V25/V26</div>
+<div id="qinisoList" class="mt-3 space-y-2">Loading...</div>
+</div>
+
+<div id="clonesSection" style="display:none;" class="bg-white rounded-xl p-3 mt-2 border-2 border-yellow-600">
+<div class="font-black text-[13px]">⚠️ CLONE ATTEMPTS - Someone copied your site</div>
+<div id="clonesList" class="mt-3 space-y-2">Loading...</div>
+</div>
+</div>
+
+<script>
+let map, markers=[];
+function showTab(t){
+  ['breaches','scans','feelings','qiniso','clones'].forEach(id=>{
+    document.getElementById(id+'Section').style.display = id===t?'block':'none';
+  });
+}
+function initMap(){
+  map=L.map('map').setView([-33.8693,25.4516],10);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+}
+function addMarker(lat,lng,label,color='red'){
+  if(!lat||!lng||isNaN(lat)) return;
+  let m=L.marker([lat,lng]).addTo(map).bindPopup(label);
+  markers.push(m);
+}
+
+window.addEventListener('load', async()=>{
+  initMap();
+  // BREACHES - HACKER PHOTOS
+  try{
+    let q=query(collection(db,'security_breaches'), orderBy('time','desc'), limit(50));
+    onSnapshot(q, snap=>{
+      let html=''; let count=0;
+      snap.forEach(doc=>{
+        count++;
+        let d=doc.data();
+        let photo = d.hackerPhoto ? `<img src="${d.hackerPhoto}" class="w-full h-[200px] object-cover rounded-xl border-2 border-red-600 mt-2">` : '<div class="bg-gray-100 p-3 rounded-xl text-[10px] mt-2">📸 No photo - Camera denied or no camera</div>';
+        let gps = d.gps ? (typeof d.gps === 'object' ? `${d.gps.lat?.toFixed(5)},${d.gps.lng?.toFixed(5)} Acc:${d.gps.acc||'?'}m` : d.gps) : 'unknown';
+        let dev = d.device ? `${d.device.platform || ''} | ${d.device.screen || ''} | ${d.device.language || ''}<br><span class="text-[7px]">${(d.device.userAgent||'').substring(0,120)}</span>` : 'unknown';
+        if(d.gps && d.gps.lat) addMarker(d.gps.lat, d.gps.lng, `🚨 HACKER ${d.inspectorAttempted} ${d.ip}`, 'red');
+        html+=`<div class="border-2 border-red-200 rounded-xl p-3 bg-red-50">
+          <div class="flex justify-between"><div class="font-black text-[11px] text-red-800">🚨 ${d.type} - ${d.inspectorAttempted} - Attempt ${d.attempts}</div><div class="text-[8px] bg-red-600 text-white px-2 py-1 rounded-full">${d.isBlocked?'BLOCKED 60min':'TRY '+d.attempts}</div></div>
+          ${photo}
+          <div class="mt-2 grid grid-cols-1 gap-1 text-[9px]">
+            <div><b>🌐 IP:</b> ${d.ip} | ${d.ipCity||''} ${d.ipRegion||''} | Org: ${d.ipOrg||''}</div>
+            <div><b>📍 GPS:</b> ${gps}</div>
+            <div><b>📱 Device:</b> ${dev}</div>
+            <div><b>🕒 Time:</b> ${d.time?.toDate ? d.time.toDate().toLocaleString() : d.time}</div>
+            <div><b>🛡️ Evidence:</b> ${d.evidenceLevel} | Has Photo: ${d.hasPhoto?'YES 📸':'NO'}</div>
+            <div><b>Reported:</b> ${d.reportedTo?.join(', ')} | SAPS ${d.sapsRef}</div>
+          </div>
+          <div class="mt-2 flex gap-2"><a href="https://www.google.com/maps?q=${d.gps?.lat},${d.gps?.lng}" target="_blank" class="bg-blue-600 text-white text-[8px] px-2 py-1 rounded">📍 VIEW MAP</a><a href="https://whatismyipaddress.com/ip/${d.ip}" target="_blank" class="bg-slate-800 text-white text-[8px] px-2 py-1 rounded">🌐 IP LOOKUP</a></div>
+        </div>`;
+      });
+      document.getElementById('breachesList').innerHTML = html || 'No breaches yet - System secure V26 ✅';
+      document.getElementById('hackCount').innerText = count;
+      document.getElementById('liveCount').innerText = `● LIVE - ${count} hacker attempts captured`;
+    });
+  }catch(e){ document.getElementById('breachesList').innerText='Error: '+e.message; }
+
+  // SCANS
+  try{
+    let q2=query(collection(db,'customer_scans'), orderBy('timestamp','desc'), limit(50));
+    onSnapshot(q2, snap=>{
+      let html=''; let c=0;
+      snap.forEach(doc=>{ c++; let d=doc.data(); if(d.lat) addMarker(d.lat,d.lng,`📱 ${d.barcode}`,'blue'); html+=`<div class="border rounded-xl p-2 text-[10px]"><b>${d.barcode}</b> - ${d.ageGroup} | 📍 ${d.lat?.toFixed(4)},${d.lng?.toFixed(4)} | IP:${d.ip||d.ip} | Device:${d.device?.platform||''} ${d.device?.screen||''} | ${d.timestamp?.toDate?.().toLocaleString()||''}</div>`; });
+      document.getElementById('scansList').innerHTML=html||'No scans'; document.getElementById('scanCount').innerText=c;
+    });
+  }catch(e){}
+
+  // FEELINGS
+  try{
+    let q3=query(collection(db,'customer_feelings'), orderBy('timestamp','desc'), limit(50));
+    onSnapshot(q3, snap=>{
+      let html=''; let c=0;
+      snap.forEach(doc=>{ c++; let d=doc.data(); html+=`<div class="border rounded-xl p-2 text-[10px]"><b>${d.feeling?.toUpperCase()}</b> - ${d.comment||''} | ${d.barcode||''} | 📍 ${d.lat?.toFixed(4)} | IP:${d.ip||''} | ${d.timestamp?.toDate?.().toLocaleString()||''}</div>`; });
+      document.getElementById('feelingsList').innerHTML=html||'No feelings'; document.getElementById('feelCount').innerText=c;
+    });
+  }catch(e){}
+
+  // QINISO LOGS
+  try{
+    let q4=query(collection(db,'qiniso_logs'), orderBy('time','desc'), limit(50));
+    onSnapshot(q4, snap=>{
+      let html=''; let c=0;
+      snap.forEach(doc=>{ c++; let d=doc.data(); if(d.gps?.lat) addMarker(d.gps.lat,d.gps.lng,`👮 ${d.inspector?.name} ${d.scanId}`,'green'); html+=`<div class="border rounded-xl p-2 text-[10px]"><b>${d.scanId}</b> - ${d.inspector?.name} ${d.location} | 📍 ${d.gps?.lat?.toFixed(4)},${d.gps?.lng?.toFixed(4)} | IP:${d.ip} | Photos:${d.photos} | ${d.time?.toDate?.().toLocaleString()||''}</div>`; });
+      document.getElementById('qinisoList').innerHTML=html||'No QINISO logs'; document.getElementById('qinisoCount').innerText=c;
+    });
+  }catch(e){}
+
+  // CLONES
+  try{
+    let q5=query(collection(db,'clone_attempts'), orderBy('time','desc'), limit(20));
+    onSnapshot(q5, snap=>{
+      let html='';
+      snap.forEach(doc=>{ let d=doc.data(); html+=`<div class="border rounded-xl p-2 text-[10px] bg-yellow-50"><b>⚠️ Clone:</b> ${d.host} | ${d.href} | Device: ${d.device?.platform||''} | ${d.time?.toDate?.().toLocaleString()||d.time}</div>`; });
+      document.getElementById('clonesList').innerHTML=html||'No clones - QINISO secure ✅';
+    });
+  }catch(e){}
+});
+</script>
+</body></html>
